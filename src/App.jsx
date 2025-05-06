@@ -9,10 +9,10 @@ export default function App() {
 
   const numbers = ['9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
 
-  const clickOperand = (event) => {
+  const clickOperand = (num) => {
     if(expression.includes('+') || expression.includes('-')){
-      setOperand2(operand2 + event.target.innerHTML)
-    }else setOperand1(operand1 + event.target.innerHTML)
+      setOperand2(operand2 + num)
+    }else setOperand1(operand1 + num)
   }
 
   const clickOperator = (event) => {
@@ -49,7 +49,7 @@ export default function App() {
     <div className={styles.calcWrapper}>
       <input disabled type="text" className={styles.calcInput} value={expression}/>
       <div className={styles.buttons}>
-        {numbers.map(num => <button onClick={clickOperand} className={styles.calcBtn}>{num}</button>)}
+        {numbers.map(num => <button onClick={() => clickOperand(num)} className={styles.calcBtn}>{num}</button>)}
         <button disabled={operand1 === '' ? true : false} onClick={clickOperator} className={styles.calcBtn}>+</button>
         <button disabled={operand1 === '' ? true : false} onClick={clickOperator} className={styles.calcBtn}>-</button>
         <button disabled={operand1 === '' ? true : false} onClick={reset} className={styles.calcBtn}>C</button>
