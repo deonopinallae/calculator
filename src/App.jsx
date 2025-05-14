@@ -8,30 +8,58 @@ export default function App() {
   const [expression, setExpression] = useState('')
 
   const numbers = ['9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
+  const operators = ['+', '-']
 
   const clickOperand = (num) => {
+    let updatedOperand1 = operand1 || ''
+    let updatedOperand2 = operand2 || ''
+
     if(expression.includes('+') || expression.includes('-')){
+      updatedOperand2 = operand2 + num
       setOperand2(operand2 + num)
-    }else setOperand1(operand1 + num)
+    }else {
+      updatedOperand1 = operand1 + num
+      setOperand1(operand1 + num)
+    }
+    setExpression(updatedOperand1 + operator + updatedOperand2)
   }
 
-  const clickOperator = (event) => {
-    if(operand2 === '') setOperator(event.target.innerHTML)
+  const clickOperator = (op) => {
+    let updatedOperator = ''
+
+    if(operand2 === '') {
+      updatedOperator = op
+      setOperator(op)
+    }
+    else if(operator !== ''){
+      calcResult()
+      setOperator(op)
+      setExpression((exp) => exp + op)
+      return
+    }
     else{
       calcResult()
-      setOperator(event.target.innerHTML)
+      setOperator(op)
     }
+    setExpression(operand1 + updatedOperator + operand2)
   }
 
 	const calcResult = () => {
+    let result = ''
     switch(operator){
       case '+':
-        setOperand1(Number(operand1) + Number(operand2))
+        result = Number(operand1) + Number(operand2)
+        setOperand1(result)
+        setExpression(result)
+
         setOperand2('')
         setOperator('')
       break
       case '-':
-        setOperand1(Number(operand1) - Number(operand2))
+        result = Number(operand1) - Number(operand2)
+        setOperand1(result)
+        setExpression(result)
+
         setOperand2('')
         setOperator('')
     }
@@ -41,126 +69,20 @@ export default function App() {
     setOperand1('')
     setOperand2('')
     setOperator('')
+    setExpression('')
   }
   
-  setTimeout(() => setExpression(operand1 + operator + operand2), 10)
 
   return (
     <div className={styles.calcWrapper}>
-      <input disabled type="text" className={styles.calcInput} value={expression}/>
+      <input disabled className={styles.calcInput} value={expression}/>
       <div className={styles.buttons}>
         {numbers.map(num => <button onClick={() => clickOperand(num)} className={styles.calcBtn}>{num}</button>)}
-        <button disabled={operand1 === '' ? true : false} onClick={clickOperator} className={styles.calcBtn}>+</button>
-        <button disabled={operand1 === '' ? true : false} onClick={clickOperator} className={styles.calcBtn}>-</button>
-        <button disabled={operand1 === '' ? true : false} onClick={reset} className={styles.calcBtn}>C</button>
-        <button disabled={operand1 === '' || operator === '' || operand2 === '' ? true : false} onClick={calcResult} className={styles.calcBtn}>=</button>
+        {operators.map(op => <button disabled={operand1 === ''} onClick={() => clickOperator(op)} className={styles.calcBtn}>{op}</button>)}
+        
+        <button disabled={operand1 === ''  && expression === ''} onClick={reset} className={styles.calcBtn}>C</button>
+        <button disabled={operand1 === '' || operator === '' || operand2 === ''} onClick={calcResult} className={styles.calcBtn}>=</button>
       </div>
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import styles from './App.module.css'
-// import { useState } from 'react'
-
-// export default function App() {  
-//   const [operand1, setOperand1] = useState('')
-//   const [operator, setOperator] = useState('')
-//   const [operand2, setOperand2] = useState('')
-//   // const [result, setResult] = useState('')
-//   const [expression, setExpression] = useState('')
-
-
-//   const numbers = ['9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-
-//   const clickButton = (event) => {
-//     setResult('')
-//     const eventValue = event.target.innerHTML
-//     if(operator === ''){
-//       if(numbers.some(el => el === eventValue)){
-//         setOperand1(operand1 + eventValue)
-//         setExpression(expression + eventValue)
-//       }
-//     }else if(operator !== ''){
-//       if(numbers.some(el => el === eventValue)){
-//         setOperand2(operand2 + eventValue)
-//         setExpression(expression + eventValue)
-//       } 
-//     }
-//     if(eventValue === '+' || eventValue === '-'){
-//       if(operand2 !== ''){
-//         calcResult()
-//         setExpression(expression + eventValue)
-//         setOperator(eventValue)
-//         setResult('')
-//       }
-      
-//       setOperator(eventValue)
-//       setExpression(expression + eventValue)
-//     }
-//   }  
-
-
-// 	const calcResult = () => {
-// 		switch (operator) {
-// 			case '+':
-//         setResult(Number(operand1) + Number(operand2))
-//         setExpression(Number(operand1) + Number(operand2))
-//         reset()
-//         break
-// 			case '-': 
-//         setResult(Number(operand1) - Number(operand2))
-//         setExpression(Number(operand1) - Number(operand2))
-//         reset()
-// 		}
-// 	}
-
-//   const reset = () => {
-//     setOperand1('')
-//     setOperand2('')
-//     setOperator('')
-//   }
-
-//   return (
-//     <div className={styles.calcWrapper}>
-//       <input disabled type="text" className={styles.calcInput} value={expression}/>
-//       <div className={styles.buttons}>
-//         {numbers.map(num => <button onClick={clickButton} className={styles.calcBtn}>{num}</button>)}
-//         <button disabled={operand1 === '' ? true : false} onClick={clickButton} className={styles.calcBtn}>+</button>
-//         <button disabled={operand1 === '' ? true : false} onClick={clickButton} className={styles.calcBtn}>-</button>
-//         <button disabled={operand1 === '' ? true : false} onClick={reset} className={styles.calcBtn}>C</button>
-//         <button disabled={operand1 === '' || operator === '' || operand2 === '' ? true : false} onClick={calcResult} className={styles.calcBtn}>=</button>
-//       </div>
-//     </div>
-//   )
-// }
